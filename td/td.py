@@ -1,16 +1,17 @@
 import typer
-from rich.console import Console
 from datetime import datetime
 import time
+import json
 
+from db import HOME_DIR
+from db import TODO_DB
 from db import get_list_file
 from db import write_to_file
 
 
 app = typer.Typer(add_completion=False)
-console = Console()
-OK_SIGN = "✓"
-KO_SIGN = "✕"
+OK_SIGN = typer.style("✓", fg=typer.colors.GREEN, bold=True)
+KO_SIGN = typer.style("✕", fg=typer.colors.RED, bold=True)
 
 
 @app.callback(invoke_without_command=True)
@@ -22,16 +23,16 @@ def main(ctx: typer.Context):
         print()
         for item in get_list_file():
             if item["status"] == "pending":
-                console.print(f"{item['id']} | [red]{KO_SIGN}[/red] {item['desc']}")
+                typer.echo(f"{item['id']} | {KO_SIGN} {item['desc']}")
             else:
-                console.print(f"{item['id']} | [green]{OK_SIGN}[/green] {item['desc']}")
+                typer.echo(f"{item['id']} | {OK_SIGN} {item['desc']}")
         print()
 
 
 @app.command()
 def add(desc: str):
     """
-    Add an item to the list.
+    Add a new task to the list.
     """
     list = get_list_file()
     id = list[-1]["id"]+1
@@ -43,7 +44,19 @@ def add(desc: str):
         "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") + time.strftime("%z %Z", time.localtime())
     }
 
-    write_to_file(new_item)
+    list.append(new_item)
+    write_to_file(list)
+
+
+@app.command()
+def modify(index: int = typer.Argument(...),
+           desc: str = typer.Argument(...)):
+    """
+    Modify the text of an existing task.
+    """
+    list = get_list_file()
+    list[index-1]["desc"] = desc
+    write_to_file(list)
 
 
 if __name__ == "__main__":

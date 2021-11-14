@@ -9,20 +9,16 @@ TODO_DB = Path(f"{HOME_DIR}/.todos")
 
 def get_list_file():
     try:
-        file = open(TODO_DB)
-        data = json.load(file)
-        return data
+        if os.path.getsize(f"{HOME_DIR}/.todos") == 0:
+            return []
+        else:
+            with open(f"{HOME_DIR}/.todos", 'r') as file:
+                return json.load(file)
     except Exception as e:
-        print("No config file")
+        print("No todo file")
+        exit()
 
 
-def write_to_file(dict):
-    if os.path.getsize(f"{HOME_DIR}/.todos") == 0:
-        file_data = []
-    else:
-        with open(f"{HOME_DIR}/.todos", 'r') as file:
-            file_data = json.load(file)
-
-    file_data.append(dict)
+def write_to_file(file_data):
     with open(f"{HOME_DIR}/.todos", 'w') as file:
         json.dump(file_data, file, indent=2)
