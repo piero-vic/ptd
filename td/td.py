@@ -59,5 +59,19 @@ def modify(index: int = typer.Argument(...),
     write_to_file(list)
 
 
+@app.command()
+def toggle(index: int = typer.Argument(...)):
+    """
+    Toggle the status of a task by giving his id.
+    """
+    list = get_list_file()
+    status = list[index-1]["status"]
+    if status == "pending":
+        list[index-1]["status"] = "done"
+    else:
+        list[index-1]["status"] = "pending"
+    write_to_file(list)
+
+
 if __name__ == "__main__":
     app()
