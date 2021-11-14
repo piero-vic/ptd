@@ -73,5 +73,15 @@ def toggle(index: int = typer.Argument(...)):
     write_to_file(list)
 
 
+@app.command()
+def clean():
+    """
+    Remove finished tasks from the list
+    """
+    list = get_list_file()
+    list = [task for task in list if task["status"] == "pending"]
+    write_to_file(list)
+
+
 if __name__ == "__main__":
     app()
