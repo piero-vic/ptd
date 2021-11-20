@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "td"
+name = "todo"
 version = "0.1.0"
 description = ""
 authors = ["Piero Lescano <71156605+piero-vic@users.noreply.github.com>"]
@@ -12,7 +12,7 @@ typer = "^0.4.0"
 pytest = "^5.2"
 
 [tool.poetry.scripts]
-todo = "td.td:app"
+todo = "todo.todo:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
