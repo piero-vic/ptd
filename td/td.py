@@ -1,13 +1,7 @@
 import typer
 from datetime import datetime
 import time
-import json
-
-from .db import HOME_DIR
-from .db import TODO_DB
-from .db import get_list_file
-from .db import get_task_index
-from .db import write_to_file
+from .db import get_list_file, get_task_index, write_to_file
 
 
 app = typer.Typer(add_completion=False)
@@ -49,7 +43,8 @@ def add(desc: str):
         "id": id,
         "desc": desc,
         "status": "pending",
-        "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") + time.strftime("%z %Z", time.localtime())
+        "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") +
+                    time.strftime("%z %Z", time.localtime())
     }
 
     list.append(new_item)
@@ -86,7 +81,7 @@ def toggle(id: int = typer.Argument(...)):
 @app.command()
 def clean():
     """
-    Remove finished tasks from the list
+    Remove finished tasks from the list.
     """
     list = get_list_file()
     list = [task for task in list if task["status"] == "pending"]

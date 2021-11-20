@@ -1,9 +1,10 @@
 import os
 import json
+import typer
 
 
 HOME_DIR = os.environ['HOME']
-TODO_DB = f"{HOME_DIR}/.todos-test"
+TODO_DB = f"{HOME_DIR}/.todos"
 
 
 def get_list_file():
@@ -14,7 +15,11 @@ def get_list_file():
             with open(TODO_DB, 'r') as file:
                 return json.load(file)
     except Exception as e:
-        print("No todo file")
+        typer.echo(
+            f'{typer.style("Error", fg=typer.colors.RED)}\n'
+            'A store for your todos is missing.\n'
+            'Create a ".todos" file in your home directory.'
+        )
         exit()
 
 
