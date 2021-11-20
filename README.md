@@ -1,6 +1,14 @@
 # todo
 > A minimal todo list for your terminal.
 
+## Installation
+
+Run the following command.
+
+```
+pip install git+https://github.com/piero-vic/todo.git
+```
+
 ## Usage
 
 *todo* will search for a `.todos` file inside your home directory. All the tasks are stored as JSON objects.
