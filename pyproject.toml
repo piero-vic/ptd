@@ -6,11 +6,13 @@ authors = ["Piero Lescano <71156605+piero-vic@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-rich = "^10.13.0"
 typer = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+
+[tool.poetry.scripts]
+todo = "td.td:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

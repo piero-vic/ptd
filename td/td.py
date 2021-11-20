@@ -3,10 +3,11 @@ from datetime import datetime
 import time
 import json
 
-from db import HOME_DIR
-from db import TODO_DB
-from db import get_list_file
-from db import write_to_file
+from .db import HOME_DIR
+from .db import TODO_DB
+from .db import get_list_file
+from .db import get_task_index
+from .db import write_to_file
 
 
 app = typer.Typer(add_completion=False)
@@ -20,13 +21,17 @@ def main(ctx: typer.Context):
     To Do list for the command line.
     """
     if ctx.invoked_subcommand is None:
-        print()
-        for item in get_list_file():
-            if item["status"] == "pending":
-                typer.echo(f"{item['id']} | {KO_SIGN} {item['desc']}")
-            else:
-                typer.echo(f"{item['id']} | {OK_SIGN} {item['desc']}")
-        print()
+        list = get_list_file()
+        if list:
+            print()
+            for item in list:
+                if item["status"] == "pending":
+                    typer.echo(f"{5*' '}{item['id']} | {KO_SIGN} {item['desc']}")
+                else:
+                    typer.echo(f"{5*' '}{item['id']} | {OK_SIGN} {item['desc']}")
+            print()
+        else:
+            typer.echo("There are no tasks to show.")
 
 
 @app.command()
@@ -35,7 +40,10 @@ def add(desc: str):
     Add a new task to the list.
     """
     list = get_list_file()
-    id = list[-1]["id"]+1
+    if list:
+        id = list[-1]["id"]+1
+    else:
+        id = 1
 
     new_item = {
         "id": id,
@@ -49,27 +57,29 @@ def add(desc: str):
 
 
 @app.command()
-def modify(index: int = typer.Argument(...),
+def modify(id: int = typer.Argument(...),
            desc: str = typer.Argument(...)):
     """
     Modify the text of an existing task.
     """
     list = get_list_file()
-    list[index-1]["desc"] = desc
+    index = get_task_index(id, list)
+    list[index]["desc"] = desc
     write_to_file(list)
 
 
 @app.command()
-def toggle(index: int = typer.Argument(...)):
+def toggle(id: int = typer.Argument(...)):
     """
     Toggle the status of a task by giving his id.
     """
     list = get_list_file()
-    status = list[index-1]["status"]
+    index = get_task_index(id, list)
+    status = list[index]["status"]
     if status == "pending":
-        list[index-1]["status"] = "done"
+        list[index]["status"] = "done"
     else:
-        list[index-1]["status"] = "pending"
+        list[index]["status"] = "pending"
     write_to_file(list)
 
 
