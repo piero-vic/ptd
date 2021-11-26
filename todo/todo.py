@@ -106,7 +106,16 @@ def reorder(
     else:
         item_1 = [task for task in list if task["id"] == id_1][0]
         item_2 = [task for task in list if task["id"] == id_2][0]
-        item_1["id"], item_2["id"] = item_2["id"], item_1["id"]
+
+        index_1 = list.index(item_1)
+        index_2 = list.index(item_2)
+
+        item_1["id"] = id_2
+        item_2["id"] = id_1
+
+        list[index_1] = item_2
+        list[index_2] = item_1
+
     write_to_file(list)
 
 
