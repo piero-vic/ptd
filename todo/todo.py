@@ -1,6 +1,7 @@
 import typer
 from datetime import datetime
 import time
+from typing import Optional
 from .db import get_list_file, get_task_index, write_to_file
 
 
@@ -89,15 +90,23 @@ def clean():
 
 
 @app.command()
-def reorder():
+def reorder(
+    id_1: Optional[int] = typer.Argument(None),
+    id_2: Optional[int] = typer.Argument(None)
+):
     """
     Reset ids of todo (no arguments) or swap the position of two todos.
     """
     list = get_list_file()
-    index = 1
-    for item in list:
-        item["id"] = index
-        index += 1
+    if id_1 is None or id_2 is None:
+        index = 1
+        for item in list:
+            item["id"] = index
+            index += 1
+    else:
+        item_1 = [task for task in list if task["id"] == id_1][0]
+        item_2 = [task for task in list if task["id"] == id_2][0]
+        item_1["id"], item_2["id"] = item_2["id"], item_1["id"]
     write_to_file(list)
 
 
