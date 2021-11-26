@@ -44,7 +44,7 @@ def add(desc: str):
         "desc": desc,
         "status": "pending",
         "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") +
-                    time.strftime("%z %Z", time.localtime())
+        time.strftime("%z %Z", time.localtime())
     }
 
     list.append(new_item)
@@ -85,6 +85,19 @@ def clean():
     """
     list = get_list_file()
     list = [task for task in list if task["status"] == "pending"]
+    write_to_file(list)
+
+
+@app.command()
+def reorder():
+    """
+    Reset ids of todo (no arguments) or swap the position of two todos.
+    """
+    list = get_list_file()
+    index = 1
+    for item in list:
+        item["id"] = index
+        index += 1
     write_to_file(list)
 
 
