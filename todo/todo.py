@@ -19,10 +19,11 @@ def main(ctx: typer.Context):
         if list:
             print()
             for item in list:
+                space_num = 6 - len(str(item['id']))
                 if item["status"] == "pending":
-                    typer.echo(f"{5*' '}{item['id']} | {KO_SIGN} {item['desc']}")
+                    typer.echo(f"{space_num*' '}{item['id']} | {KO_SIGN} {item['desc']}")
                 else:
-                    typer.echo(f"{5*' '}{item['id']} | {OK_SIGN} {item['desc']}")
+                    typer.echo(f"{space_num*' '}{item['id']} | {OK_SIGN} {item['desc']}")
             print()
         else:
             typer.echo("There are no tasks to show.")
