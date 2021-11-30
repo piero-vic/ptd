@@ -27,6 +27,7 @@ Commands:
   add     Add a new task to the list.
   clean   Remove finished tasks from the list.
   modify  Modify the text of an existing task.
+  reorder  Reset ids of todo (no arguments) or swap the position of two todos.
   toggle  Toggle the status of a task by giving his id.
 ```
 
