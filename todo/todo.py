@@ -100,10 +100,9 @@ def reorder(
     """
     list = get_list_file()
     if id_1 is None or id_2 is None:
-        index = 1
-        for item in list:
+        for index, item in enumerate(list, start=1):
             item["id"] = index
-            index += 1
+        typer.secho("Your list is now ordered.", fg=typer.colors.CYAN)
     else:
         item_1 = [task for task in list if task["id"] == id_1][0]
         item_2 = [task for task in list if task["id"] == id_2][0]
@@ -116,6 +115,8 @@ def reorder(
 
         list[index_1] = item_2
         list[index_2] = item_1
+
+        typer.secho("Your tasks have been swapped.", fg=typer.colors.CYAN)
 
     write_to_file(list)
 
