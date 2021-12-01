@@ -1,6 +1,7 @@
 import typer
 from datetime import datetime
 import time
+from typing import Optional
 from .db import get_list_file, get_task_index, write_to_file
 
 
@@ -45,7 +46,7 @@ def add(desc: str):
         "desc": desc,
         "status": "pending",
         "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") +
-                    time.strftime("%z %Z", time.localtime())
+        time.strftime("%z %Z", time.localtime())
     }
 
     list.append(new_item)
@@ -86,6 +87,37 @@ def clean():
     """
     list = get_list_file()
     list = [task for task in list if task["status"] == "pending"]
+    write_to_file(list)
+
+
+@app.command()
+def reorder(
+    id_1: Optional[int] = typer.Argument(None),
+    id_2: Optional[int] = typer.Argument(None)
+):
+    """
+    Reset ids of todo (no arguments) or swap the position of two todos.
+    """
+    list = get_list_file()
+    if id_1 is None or id_2 is None:
+        for index, item in enumerate(list, start=1):
+            item["id"] = index
+        typer.secho("Your list is now ordered.", fg=typer.colors.CYAN)
+    else:
+        item_1 = [task for task in list if task["id"] == id_1][0]
+        item_2 = [task for task in list if task["id"] == id_2][0]
+
+        index_1 = list.index(item_1)
+        index_2 = list.index(item_2)
+
+        item_1["id"] = id_2
+        item_2["id"] = id_1
+
+        list[index_1] = item_2
+        list[index_2] = item_1
+
+        typer.secho("Your tasks have been swapped.", fg=typer.colors.CYAN)
+
     write_to_file(list)
 
 
