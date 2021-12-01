@@ -27,7 +27,7 @@ def main(ctx: typer.Context):
                     typer.echo(f"{space_num*' '}{item['id']} | {OK_SIGN} {item['desc']}")
             print()
         else:
-            typer.echo("There are no tasks to show.")
+            typer.secho("There are no tasks to show.", fg=typer.colors.CYAN)
 
 
 @app.command()
@@ -51,6 +51,7 @@ def add(desc: str):
 
     list.append(new_item)
     write_to_file(list)
+    typer.secho(f'#{id} "{desc}" is now added to your todos.', fg=typer.colors.CYAN)
 
 
 @app.command()
@@ -63,6 +64,7 @@ def modify(id: int = typer.Argument(...),
     index = get_task_index(id, list)
     list[index]["desc"] = desc
     write_to_file(list)
+    typer.secho(f'#{id} has now a new description: {desc}', fg=typer.colors.CYAN)
 
 
 @app.command()
@@ -78,6 +80,7 @@ def toggle(id: int = typer.Argument(...)):
     else:
         list[index]["status"] = "pending"
     write_to_file(list)
+    typer.secho(f'Your todo is now {list[index]["status"]}.', fg=typer.colors.CYAN)
 
 
 @app.command()
@@ -88,6 +91,7 @@ def clean():
     list = get_list_file()
     list = [task for task in list if task["status"] == "pending"]
     write_to_file(list)
+    typer.secho('Your list is now flushed of finished todos.', fg=typer.colors.CYAN)
 
 
 @app.command()
