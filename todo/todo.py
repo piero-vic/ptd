@@ -2,10 +2,10 @@ import typer
 from datetime import datetime
 import time
 from typing import Optional
-from .db import get_list_file, get_task_index, write_to_file
+from .db import init_db, get_list_file, get_task_index, write_to_file
 
 
-app = typer.Typer(add_completion=False)
+app = typer.Typer()
 OK_SIGN = typer.style("✓", fg=typer.colors.GREEN, bold=True)
 KO_SIGN = typer.style("✕", fg=typer.colors.RED, bold=True)
 
@@ -20,14 +20,26 @@ def main(ctx: typer.Context):
         if list:
             print()
             for item in list:
-                space_num = 6 - len(str(item['id']))
+                space_num = 6 - len(str(item["id"]))
                 if item["status"] == "pending":
-                    typer.echo(f"{space_num*' '}{item['id']} | {KO_SIGN} {item['desc']}")
+                    typer.echo(
+                        f"{space_num*' '}{item['id']} | {KO_SIGN} {item['desc']}"
+                    )
                 else:
-                    typer.echo(f"{space_num*' '}{item['id']} | {OK_SIGN} {item['desc']}")
+                    typer.echo(
+                        f"{space_num*' '}{item['id']} | {OK_SIGN} {item['desc']}"
+                    )
             print()
         else:
             typer.secho("There are no tasks to show.", fg=typer.colors.CYAN)
+
+
+@app.command()
+def init():
+    """
+    Initialize a collection of todos.
+    """
+    init_db()
 
 
 @app.command()
@@ -37,7 +49,7 @@ def add(desc: str):
     """
     list = get_list_file()
     if list:
-        id = list[-1]["id"]+1
+        id = list[-1]["id"] + 1
     else:
         id = 1
 
@@ -45,8 +57,8 @@ def add(desc: str):
         "id": id,
         "desc": desc,
         "status": "pending",
-        "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ") +
-        time.strftime("%z %Z", time.localtime())
+        "modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f ")
+        + time.strftime("%z %Z", time.localtime()),
     }
 
     list.append(new_item)
@@ -55,8 +67,7 @@ def add(desc: str):
 
 
 @app.command()
-def modify(id: int = typer.Argument(...),
-           desc: str = typer.Argument(...)):
+def modify(id: int = typer.Argument(...), desc: str = typer.Argument(...)):
     """
     Modify the text of an existing task.
     """
@@ -64,7 +75,7 @@ def modify(id: int = typer.Argument(...),
     index = get_task_index(id, list)
     list[index]["desc"] = desc
     write_to_file(list)
-    typer.secho(f'#{id} has now a new description: {desc}', fg=typer.colors.CYAN)
+    typer.secho(f"#{id} has now a new description: {desc}", fg=typer.colors.CYAN)
 
 
 @app.command()
@@ -91,13 +102,13 @@ def clean():
     list = get_list_file()
     list = [task for task in list if task["status"] == "pending"]
     write_to_file(list)
-    typer.secho('Your list is now flushed of finished todos.', fg=typer.colors.CYAN)
+    typer.secho("Your list is now flushed of finished todos.", fg=typer.colors.CYAN)
 
 
 @app.command()
 def reorder(
     id_1: Optional[int] = typer.Argument(None),
-    id_2: Optional[int] = typer.Argument(None)
+    id_2: Optional[int] = typer.Argument(None),
 ):
     """
     Reset ids of todo (no arguments) or swap the position of two todos.

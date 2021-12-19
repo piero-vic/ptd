@@ -7,6 +7,15 @@ HOME_DIR = os.environ['HOME']
 TODO_DB = f"{HOME_DIR}/.todos"
 
 
+def init_db():
+    if os.path.isfile(TODO_DB):
+        typer.secho("The file has already been created.", fg=typer.colors.CYAN)
+    else:
+        f = open(TODO_DB, "w+")
+        f.close()
+        typer.secho("New file created", fg=typer.colors.CYAN)
+
+
 def get_list_file():
     try:
         if os.path.getsize(TODO_DB) == 0:
