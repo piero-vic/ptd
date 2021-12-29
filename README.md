@@ -1,5 +1,5 @@
-# todo
-> A minimal todo list for your terminal.
+# ptd
+> A minimal terminal based todo list written in Python.
 
 ## Installation
 
@@ -11,12 +11,12 @@ pip install git+https://github.com/piero-vic/todo.git
 
 ## Usage
 
-*todo* will search for a `.todos` file inside your home directory. All the tasks are stored as JSON objects.
+*ptd* will search for a `.todos` file inside your home directory. All the tasks are stored as JSON objects.
 
 ### CLI
 
 ```
-Usage: todo [OPTIONS] COMMAND [ARGS]...
+Usage: ptd [OPTIONS] COMMAND [ARGS]...
 
   To Do list for the command line.
 
